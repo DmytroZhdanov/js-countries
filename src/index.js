@@ -21,28 +21,37 @@ function handlerInput(evt) {
         Notify.info(
           'Too many matches found. Please enter a more specific name.'
         );
+      } else if (data.length === 1) {
+        renderCountry(data);
       } else {
-        createMarkup(data);
+        renderListOfCountries(data);
       }
     })
-    .catch(() => {
+    .catch(error => {
       clearHTML();
-      Notify.failure('Oops, there is no country with that name');
+      if ((error.message = '404')) {
+        Notify.failure('Oops, there is no country with that name');
+      } else {
+        Notify.failure('Error: ', error.message);
+      }
     });
 }
 
-function createMarkup(countriesArray) {
-  let markup = '';
-  if (countriesArray.length === 1) {
-    const {
-      name: { official },
-      capital,
-      population,
-      flags: { svg },
-      languages,
-    } = countriesArray[0];
+function clearHTML() {
+  refs.infoContainer.innerHTML = '';
+  refs.list.innerHTML = '';
+}
 
-    markup = `<div class="country-info-wrap">
+function renderCountry(data) {
+  const {
+    name: { official },
+    capital,
+    population,
+    flags: { svg },
+    languages,
+  } = data[0];
+
+  const countryMarkup = `<div class="country-info-wrap">
     <div class="country-name-wrap">
       <img src="${svg}" alt="Flag of ${official}">
       <h2 class="country-name">${official}</h2>
@@ -54,27 +63,23 @@ function createMarkup(countriesArray) {
     </ul>
     </div>`;
 
-    clearHTML();
-    refs.infoContainer.innerHTML = markup;
-  } else {
-    countriesArray.forEach(country => {
-      const {
-        name: { official },
-        flags: { svg },
-      } = country;
+  clearHTML();
+  refs.infoContainer.innerHTML = countryMarkup;
+}
 
-      markup += `<li class="country-item">
+function renderListOfCountries(countries) {
+  const countryListMarkup = countries.map(country => {
+    const {
+      name: { official },
+      flags: { svg },
+    } = country;
+
+    return `<li class="country-item">
       <img src="${svg}" alt="Flag of ${official}">
       <p clas="country-item-name">${official}</p>
     </li>`;
-    });
+  });
 
-    clearHTML();
-    refs.list.innerHTML = markup;
-  }
-}
-
-function clearHTML() {
-  refs.infoContainer.innerHTML = '';
-  refs.list.innerHTML = '';
+  clearHTML();
+  refs.list.innerHTML = countryListMarkup.join('');
 }
