@@ -1,11 +1,11 @@
 {
-  "name": "parcel-project-template",
+  "name": "js-countries",
   "version": "2.0.0",
   "description": "",
-  "homepage": "https://DmytroZhdanov.github.io/goit-js-hw-10",
+  "homepage": "https://DmytroZhdanov.github.io/js-countries",
   "scripts": {
     "start": "parcel src/*.html",
-    "build": "parcel build src/*.html --public-url /goit-js-hw-10/"
+    "build": "parcel build src/*.html --public-url /js-countries/"
   },
   "repository": {
     "type": "git",
